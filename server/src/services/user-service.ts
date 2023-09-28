@@ -38,6 +38,14 @@ class userService {
       isActivated: user.isActivated,
     };
   }
+  async activate(activationLink: string) {
+    const user = await User.findOne({ activationLink: activationLink });
+    if (!user) {
+      throw APIError.UnauthorizedError();
+    }
+    user.isActivated = true;
+    return await user.save();
+  }
 }
 
 export default new userService();
