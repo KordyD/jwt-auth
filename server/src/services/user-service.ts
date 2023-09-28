@@ -21,8 +21,10 @@ class userService {
       activationLink: activationLink,
       roles: [role?.value],
     });
-    // TODO: send email
-    await emailService.emailSent();
+    await emailService.emailSent(
+      email,
+      `${process.env.API_URL}/api/activate/${activationLink}`
+    );
     const tokens = tokenService.generateToken(
       user._id,
       user.roles,
