@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "tsc && node dist/index.js ",
-    "dev": "nodemon --watch src/ --exec \"npm run start\" --verbose -e ts"
+    "dev": "tsnd --respawn src/index.ts"
   },
   "keywords": [],
   "author": "",
@@ -20,7 +20,7 @@
     "@types/node": "^20.7.0",
     "@types/nodemailer": "^6.4.11",
     "@types/uuid": "^9.0.4",
-    "nodemon": "^3.0.1",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^5.2.2"
   },
   "dependencies": {
