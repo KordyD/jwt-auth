@@ -63,12 +63,16 @@ class userController {
   }
   async refresh(req: Request, res: Response, next: NextFunction) {
     try {
+      const accessToken = await userService.refresh(req.cookies.refreshToken);
+      res.json({ accessToken });
     } catch (error) {
       next(error);
     }
   }
   async getUsers(req: Request, res: Response, next: NextFunction) {
     try {
+      const users = await userService.getUsers();
+      return res.json(users);
     } catch (error) {
       next(error);
     }

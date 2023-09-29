@@ -77,6 +77,26 @@ class userService {
     }
     return await tokenService.deleteToken(refreshToken);
   }
+  async refresh(refreshToken: string) {
+    const userData = tokenService.verifyRefreshToken(refreshToken);
+    const tokenData = await tokenService.findToken(refreshToken);
+
+    if (!userData || !tokenData) {
+      throw APIError.UnauthorizedError();
+    }
+
+    const tokens = tokenService.generateToken(
+      userData.userId,
+      userData.roles,
+      userData.isActivated
+    );
+
+    return tokens.accessToken;
+  }
+  async getUsers() {
+    const users = await User.find();
+    return users;
+  }
 }
 
 export default new userService();
