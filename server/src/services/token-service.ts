@@ -3,6 +3,7 @@ import { sign } from 'jsonwebtoken';
 import { config } from 'dotenv';
 import { join } from 'path';
 import { Token } from '../models/Token';
+import { APIError } from '../errors/api-error';
 
 class tokenService {
   private accessSecretKey;
@@ -36,6 +37,15 @@ class tokenService {
       refreshToken: refreshToken,
     });
     return token;
+  }
+  async deleteToken(refreshToken: string) {
+    const tokenData = await Token.findOneAndRemove({
+      refreshToken: refreshToken,
+    });
+    if (!tokenData) {
+      throw APIError.UnauthorizedError();
+    }
+    return tokenData;
   }
 }
 

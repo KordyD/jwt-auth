@@ -1,5 +1,5 @@
 import { User } from '../models/User';
-import { hash } from 'bcrypt';
+import { hash, compare } from 'bcrypt';
 import { v4 } from 'uuid';
 import tokenService from './token-service';
 import emailService from './email-service';
@@ -45,6 +45,37 @@ class userService {
     }
     user.isActivated = true;
     return await user.save();
+  }
+  async login(email: string, password: string) {
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      throw APIError.BadRequest(`User with ${email} doesn't exist`);
+    }
+    if (user.isActivated === false) {
+      throw APIError.BadRequest(`User with ${email} doesn't activated`);
+    }
+    const isValidPassword = compare(password, user.password);
+    if (!isValidPassword) {
+      throw APIError.BadRequest('The password is invalid');
+    }
+    const tokens = tokenService.generateToken(
+      user._id,
+      user.roles,
+      user.isActivated
+    );
+    await tokenService.saveToken(user._id, tokens.refreshToken);
+    return {
+      ...tokens,
+      userId: user._id,
+      roles: user.roles,
+      isActivated: user.isActivated,
+    };
+  }
+  async logout(refreshToken: string) {
+    if (!refreshToken) {
+      throw APIError.UnauthorizedError();
+    }
+    return await tokenService.deleteToken(refreshToken);
   }
 }
 
