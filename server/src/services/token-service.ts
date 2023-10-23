@@ -23,12 +23,12 @@ class tokenService {
     const accessToken = sign(
       { userId: userId, roles: roles, isActivated: isActivated },
       this.accessSecretKey,
-      { expiresIn: '30s' }
+      { expiresIn: '15s' }
     );
     const refreshToken = sign(
       { userId: userId, roles: roles, isActivated: isActivated },
       this.refreshSecretKey,
-      { expiresIn: '30d' }
+      { expiresIn: '30s' }
     );
     return { accessToken, refreshToken };
   }
